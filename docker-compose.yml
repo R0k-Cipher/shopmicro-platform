@@ -1,0 +1,114 @@
+version: '3.8'
+
+services:
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+      - USER_SERVICE_URL=http://user-service:8001
+      - PRODUCT_SERVICE_URL=http://product-service:8002
+      - ORDER_SERVICE_URL=http://order-service:8003
+      - PAYMENT_SERVICE_URL=http://payment-service:8004
+      - NOTIFICATION_SERVICE_URL=http://notification-service:8005
+    depends_on:
+      - user-service
+      - product-service
+      - order-service
+    networks:
+      - shopmicro-network
+    restart: unless-stopped
+
+  user-service:
+    build: ./user-service
+    ports:
+      - "8001:8001"
+    environment:
+      - PORT=8001
+      - NODE_ENV=production
+      - DB_PATH=/app/data/users.json
+    volumes:
+      - user-data:/app/data
+    networks:
+      - shopmicro-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  product-service:
+    build: ./product-service
+    ports:
+      - "8002:8002"
+    environment:
+      - PORT=8002
+      - NODE_ENV=production
+      - DB_PATH=/app/data/products.json
+    volumes:
+      - product-data:/app/data
+    networks:
+      - shopmicro-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  order-service:
+    build: ./order-service
+    ports:
+      - "8003:8003"
+    environment:
+      - PORT=8003
+      - NODE_ENV=production
+      - USER_SERVICE_URL=http://user-service:8001
+      - PRODUCT_SERVICE_URL=http://product-service:8002
+      - NOTIFICATION_SERVICE_URL=http://notification-service:8005
+      - DB_PATH=/app/data/orders.json
+    volumes:
+      - order-data:/app/data
+    networks:
+      - shopmicro-network
+    restart: unless-stopped
+    depends_on:
+      - user-service
+      - product-service
+
+  payment-service:
+    build: ./payment-service
+    ports:
+      - "8004:8004"
+    environment:
+      - PORT=8004
+      - NODE_ENV=production
+      - DB_PATH=/app/data/payments.json
+    volumes:
+      - payment-data:/app/data
+    networks:
+      - shopmicro-network
+    restart: unless-stopped
+
+  notification-service:
+    build: ./notification-service
+    ports:
+      - "8005:8005"
+    environment:
+      - PORT=8005
+      - NODE_ENV=production
+    networks:
+      - shopmicro-network
+    restart: unless-stopped
+
+volumes:
+  user-data:
+  product-data:
+  order-data:
+  payment-data:
+
+networks:
+  shopmicro-network:
+    driver: bridge

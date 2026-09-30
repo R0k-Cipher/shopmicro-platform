@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "name": "Laptop Gaming",
+    "price": 1299,
+    "stock": 15,
+    "category": "electronics",
+    "description": "High-performance gaming laptop"
+  },
+  {
+    "id": 2,
+    "name": "Smartphone",
+    "price": 699,
+    "stock": 30,
+    "category": "electronics",
+    "description": "Latest smartphone model"
+  },
+  {
+    "id": 3,
+    "name": "Headphones",
+    "price": 199,
+    "stock": 50,
+    "category": "electronics",
+    "description": "Noise-cancelling headphones"
+  },
+  {
+    "id": 4,
+    "name": "Desk Chair",
+    "price": 299,
+    "stock": 20,
+    "category": "furniture",
+    "description": "Ergonomic office chair"
+  },
+  {
+    "id": 5,
+    "name": "Coffee Maker",
+    "price": 89,
+    "stock": 35,
+    "category": "home",
+    "description": "Automatic coffee machine"
+  }
+]
